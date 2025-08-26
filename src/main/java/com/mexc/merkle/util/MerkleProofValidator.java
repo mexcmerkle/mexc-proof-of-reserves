@@ -27,12 +27,12 @@ public class MerkleProofValidator {
         if (Objects.isNull(merkleTree.getSelf()) || Objects.isNull(pathNodeList) || pathNodeList.isEmpty()) {
             throw new IllegalArgumentException("invalid merkleTree content");
         }
-        //自节点验证
+
         if (!merkleTree.getSelf().validate()) {
             System.out.println("self validate failure");
             return false;
         }
-        //路径验证
+
         if (!pathValidate(merkleTree.getPathList(), merkleTree.getSelf())) {
             System.out.println("path validate failure");
             return false;
@@ -42,29 +42,25 @@ public class MerkleProofValidator {
 
     private static boolean pathValidate(List<MerklePathNode> pathNodeList, MerkleSelfNode selfNode) {
         MerklePathNode rootNode = pathNodeList.get(pathNodeList.size() - 1);
-        //获取深度
+
         int depth = rootNode.getLevel();
         Pair<MerklePathNode, MerklePathNode> nodePair = null;
-        //key=level，value=数据
+        //key=level，value= pathNode
         Map<Integer, MerklePathNode> levelNodeMap = pathNodeList.stream().collect(Collectors.toMap(MerklePathNode::getLevel, merklePathNode -> merklePathNode));
-        //通过左右节点计算出来的内部节点
         MerklePathNode clcInnerNode = selfNode;
         for (int i = 0; i < depth; i++) {
             MerklePathNode node = levelNodeMap.get(i);
             if (Objects.isNull(node)) {
-                //创建一个空节点
                 node = createEmptyNode(clcInnerNode.getType() == LEFT_TYPE ? RIGHT_TYPE : LEFT_TYPE, clcInnerNode.getLevel());
             }
             nodePair = decideNodePair(clcInnerNode, node);
             int parentLevel = i + 1;
-            //通过左右节点计算内部父节点
             clcInnerNode = createInnerNode(nodePair.getLeft(), nodePair.getRight(), getParentNodeType(levelNodeMap.get(parentLevel)), parentLevel);
         }
         if (Objects.isNull(nodePair)) {
             System.out.println("validate error");
             return false;
         }
-        //计算出来的root节点
         MerklePathNode clcRootNode = createInnerNode(nodePair.getLeft(), nodePair.getRight(), ROOT_TYPE, rootNode.getLevel());
         return clcRootNode.getHash().equals(rootNode.getHash());
     }
@@ -74,7 +70,6 @@ public class MerkleProofValidator {
     }
 
     private static int getParentNodeType(MerklePathNode parentNodeBrother) {
-        //说明右节点为空
         if (Objects.isNull(parentNodeBrother)) {
             return LEFT_TYPE;
         } else {
@@ -82,18 +77,19 @@ public class MerkleProofValidator {
         }
     }
 
+    /***
+     * calculate internal parent nodes through left and right nodes
+     */
     public static MerklePathNode createInnerNode(MerklePathNode leftNode, MerklePathNode rightNode, int type, int level) {
         MerklePathNode merklePathNode = new MerklePathNode();
         merklePathNode.setBalances(new TreeMap<>());
         merklePathNode.mergeBalance(leftNode);
-        //右节点不为空
         if (StringUtils.isNotBlank(rightNode.getHash())) {
             initBalanceData(merklePathNode);
             merklePathNode.mergeBalance(rightNode);
         }
         merklePathNode.setLevel(level);
         merklePathNode.setType(type);
-        //计算hash
         merklePathNode.calcHashId(leftNode.getHash(), rightNode.getHash());
         return merklePathNode;
     }

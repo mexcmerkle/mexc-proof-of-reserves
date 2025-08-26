@@ -5,13 +5,9 @@ import com.mexc.merkle.util.SignatureUtil;
 import java.util.Objects;
 
 public class MerkleSelfNode extends MerklePathNode {
-    /**
-     * 证明Id
-     */
+
     private String proofId;
-    /**
-     * 账户Id
-     */
+
     private String accountId;
 
     public String getProofId() {
