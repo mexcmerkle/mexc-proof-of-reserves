@@ -8,20 +8,18 @@ import java.util.Objects;
 import java.util.SortedMap;
 
 public class MerklePathNode {
-    /**
-     * 层级
-     */
+
     private Integer level;
     /**
-     * 当前节点类型：0/根节点 1/左节点 2/右节点
+     * node type: 1/leftNode 2/rigthNode 3/rootNode
      */
     private Integer type;
     /**
-     * 节点hash
+     * node hash
      */
     private String hash;
     /**
-     * 默克尔资产：key=币种 value= 金额
+     * asset：key=currency value= amount
      */
     private SortedMap<String, String> balances;
 
@@ -69,11 +67,10 @@ public class MerklePathNode {
     }
 
     /**
-     * 计算节点hashId
+     * calculate node hashId
      *
-     * @param leftHash  左节点hash
-     * @param rightHash 右节点hash
-     * @return 计算出来的hashId
+     * @param leftHash:  left node hash
+     * @param rightHash: right nodehash
      */
     public String calcHashId(String leftHash, String rightHash) {
         StringBuilder balanceSb = new StringBuilder();

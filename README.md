@@ -1,34 +1,34 @@
-# 自验证步骤
+# Merkle Proof Validation Tool
 
-## 1、环境依赖
+## 1、Environmental dependence
 
 JDK1.8
 
 maven 3.6.3 
 
-## 2、创建可执行文件
+## 2、Build the executable file
 
-### 拉取最新源代码文件 执行命令生成可执行文件
+### Download the latest source code files,and execute commands to generate an executable file
 
 `mvn clean package`
 
-### 检查target目录下编译好的可执行文件 .jar
+### check the compiled jar package, as follows, in the current project directory.
 
 `./target/mexc-proof-of-reserves.jar`
 
-## 3、验证步骤
+## 3、Verification steps
 
-将证明文件粘贴至当前文件夹的新文件中，并将此文件命名为**“myProof.json”**。然后，执行以下命令：
+You can paste the proof file into a new file in the target current directory, and name the file as myProof.json. Then, execute the following command:
 
 `java -jar ./target/mexc-proof-of-reserves.jar myProof.json`
 
-观察执行结果：
+Observe the execution results:
 
-验证通过
+Verification successful
 
 `validate result is true`
 
-验证失败
+Verification failed
 
 `validate result is false`
-# mexc-proof-of-reserves
+
